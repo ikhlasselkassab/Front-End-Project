@@ -2,13 +2,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class StationTrameService {
-  final String apiUrl = 'http://localhost:8081/api/stations';
+  static final String apiUrl = 'http://localhost:8081/api/stations';
 
-  Future<List<Station>> fetchStations() async {
+  static Future<List<Station>> fetchStations() async {
 
     final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: {'Accept': 'application/json; charset=UTF-8'}, // Assurer UTF-8
+        Uri.parse(apiUrl),
+         headers: {'Accept': 'application/json; charset=UTF-8'},
+
     );
 
     if (response.statusCode == 200) {
@@ -27,15 +28,26 @@ class Station {
   final double lat;
   final double lng;
   final String name;
+  final List<String> lines;
 
-  Station({required this.id, required this.lat, required this.lng, required this.name});
+  Station({
+    required this.id,
+    required this.lat,
+    required this.lng,
+    required this.name,
+    required this.lines,
+  });
 
   factory Station.fromJson(Map<String, dynamic> json) {
     return Station(
-      id: json['id'],
-      lat: json['lat'],
-      lng: json['lng'],
-      name: json['name'],
+      id: json['id'] ?? '',
+      lat: (json['lat'] as num).toDouble(), // Convertir en double
+      lng: (json['lng'] as num).toDouble(), // Convertir en double
+      name: json['name'] ?? 'Unknown',
+      lines: json['lines'] != null
+          ? List<String>.from(json['lines']) // Convertir explicitement en List<String>
+          : [], // Utiliser une liste vide si null
     );
   }
 }
+

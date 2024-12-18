@@ -50,7 +50,6 @@ class StationBus {
 class StationBusService {
   static final String baseUrl = 'http://localhost:8081/api';
 
-  // Récupérer la liste des stations de bus
   static Future<List<StationBus>> fetchBusStations() async {
     try {
       final response = await http.get(

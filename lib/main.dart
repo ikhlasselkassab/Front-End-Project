@@ -31,13 +31,14 @@ class HotelMapScreen extends StatefulWidget {
 }
 
 class _HotelMapScreenState extends State<HotelMapScreen> {
-  // Données
+
   List<Marker> _markers = [];
   List<Hotel> _hotels = [];
   List<Restaurant> _restaurants = [];
   List<StationBus> _stationsBus = [];
+  List<Station> _stations = [];
 
-  // Filtres supplémentaires
+
   bool _filterHotels5Star = false;
   bool _filterHotels4Star = false;
   bool _filterHotels3Star = false;
@@ -55,12 +56,16 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
   bool _filterBusLine106 = false;
   bool _filterBusLine107 = false;
 
+  bool _filterLine1 = false;
+  bool _filterLine2 = false;
+
   @override
   void initState() {
     super.initState();
     loadHotels();
     loadRestaurants();
     loadBusStations();
+    loadStations();
   }
 
   Future<void> loadHotels() async {
@@ -83,7 +88,6 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
     }
   }
 
-
   Future<void> loadRestaurants() async {
     try {
       final restaurants = await RestaurantService.fetchRestaurants();
@@ -104,6 +108,32 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       print('Error loading restaurants: $error');
     }
   }
+  Future<void> loadStations() async {
+    try {
+      final stations = await StationTrameService.fetchStations();
+      setState(() {
+        _stations = stations;
+        _markers.addAll(_stations.map((station) {
+          return Marker(
+            point: LatLng(station.lat, station.lng),
+            builder: (ctx) => GestureDetector(
+              onTap: () => _showStationDetails(station),
+              child: Icon(Icons.train, color: Colors.blueAccent, size: 15),
+            ),
+          );
+        }).toList());
+      });
+
+
+
+
+
+    } catch (error) {
+      print('Error loading stations: $error');
+    }
+  }
+
+
   Future<void> loadBusStations() async {
     try {
       final stationsBus = await StationBusService.fetchBusStations();
@@ -483,16 +513,14 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
   }
 
 
-
-  // Mise à jour des marqueurs selon les filtres
   void _updateMarkers() {
     List<Marker> markers = [];
-
-    // Si aucun filtre n'est activé, on affiche tous les marqueurs
     if (!_filterHotels5Star && !_filterHotels4Star && !_filterHotels3Star && !_filterHotels2Star &&
-        !_filterRestaurantsItalien && !_filterRestaurantsFastFood && !_filterRestaurantsMarocain && !_filterRestaurantsOriental && !_filterRestaurantsAsiatique &&
-        !_filterBusLine101 && !_filterBusLine102 && !_filterBusLine104 && !_filterBusLine106 && !_filterBusLine107) {
-      // Ajouter tous les hôtels
+        !_filterRestaurantsItalien && !_filterRestaurantsFastFood && !_filterRestaurantsMarocain &&
+        !_filterRestaurantsOriental && !_filterRestaurantsAsiatique &&
+        !_filterBusLine101 && !_filterBusLine102 && !_filterBusLine104 &&
+        !_filterBusLine106 && !_filterBusLine107 &&
+        !_filterLine1 && !_filterLine2) {
       _hotels.forEach((hotel) {
         markers.add(Marker(
           point: LatLng(hotel.latitude, hotel.longitude),
@@ -502,7 +530,6 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
         ));
       });
 
-      // Ajouter tous les restaurants
       _restaurants.forEach((restaurant) {
         markers.add(Marker(
           point: LatLng(restaurant.latitude, restaurant.longitude),
@@ -511,8 +538,6 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
           ),
         ));
       });
-
-      // Ajouter toutes les stations de bus
       _stationsBus.forEach((station) {
         markers.add(Marker(
           point: LatLng(station.lat, station.lng),
@@ -521,11 +546,17 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
           ),
         ));
       });
+
+      _stations.forEach((stationT) {
+        markers.add(Marker(
+          point: LatLng(stationT.lat, stationT.lng),
+          builder: (ctx) => GestureDetector(
+            child: Icon(Icons.train, color: Colors.blue, size: 15),
+          ),
+        ));
+      });
     }
 
-    // Appliquer les filtres si activés
-
-    // Filtrer les hôtels
     if (_filterHotels5Star || _filterHotels4Star || _filterHotels3Star || _filterHotels2Star) {
       _hotels.forEach((hotel) {
         if ((_filterHotels5Star && hotel.etoiles == 5) ||
@@ -542,8 +573,8 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       });
     }
 
-    // Filtrer les restaurants
-    if (_filterRestaurantsItalien || _filterRestaurantsFastFood || _filterRestaurantsMarocain || _filterRestaurantsOriental || _filterRestaurantsAsiatique) {
+    if (_filterRestaurantsItalien || _filterRestaurantsFastFood || _filterRestaurantsMarocain ||
+        _filterRestaurantsOriental || _filterRestaurantsAsiatique) {
       _restaurants.forEach((restaurant) {
         if ((_filterRestaurantsItalien && restaurant.categorie == 'Italien') ||
             (_filterRestaurantsFastFood && restaurant.categorie == 'Fast Food') ||
@@ -560,7 +591,6 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       });
     }
 
-    // Filtrer les stations de bus
     if (_filterBusLine101 || _filterBusLine102 || _filterBusLine104 || _filterBusLine106 || _filterBusLine107) {
       _stationsBus.forEach((station) {
         if ((_filterBusLine101 && station.lines.contains("L101")) ||
@@ -577,13 +607,26 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
         }
       });
     }
-
+    if (_filterLine1 || _filterLine2) {
+      _stations.forEach((stationT) {
+        if ((_filterLine1 && stationT.lines.contains("L1")) ||
+            (_filterLine2 && stationT.lines.contains("L2"))) {
+          markers.add(Marker(
+            point: LatLng(stationT.lat, stationT.lng),
+            builder: (ctx) => GestureDetector(
+              child: Icon(Icons.train, color: _filterLine1 ? Colors.blueAccent : Colors.orangeAccent, size: 35),
+            ),
+          ));
+        }
+      });
+    }
     setState(() {
-      _markers = markers; // Mise à jour des marqueurs affichés
+      _markers = markers;
     });
   }
 
-  // Fonction appelée lorsque l'utilisateur change un filtre
+
+
   void _onFilterChanged(Map<String, bool> filters) {
     setState(() {
       _filterHotels5Star = filters['hotel_5_star'] ?? false;
@@ -602,9 +645,12 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       _filterBusLine104 = filters['bus_line_104'] ?? false;
       _filterBusLine106 = filters['bus_line_106'] ?? false;
       _filterBusLine107 = filters['bus_line_107'] ?? false;
+
+      _filterLine1 = filters['line_1'] ?? false;
+      _filterLine2 = filters['line_2'] ?? false;
     });
 
-    _updateMarkers(); // Met à jour les marqueurs après changement de filtre
+    _updateMarkers();
   }
 
   @override
@@ -613,7 +659,23 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       appBar: AppBar(
         title: Text('Carte des Hôtels'),
       ),
-      drawer: CustomSidebar(onFilterChanged: _onFilterChanged),
+      drawer: CustomSidebar(
+        onFilterChanged: _onFilterChanged,
+        filterHotels5Star: _filterHotels5Star,
+        filterHotels4Star: _filterHotels4Star,
+        filterHotels3Star: _filterHotels3Star,
+        filterHotels2Star: _filterHotels2Star,
+        filterRestaurantsItalien: _filterRestaurantsItalien,
+        filterRestaurantsFastFood: _filterRestaurantsFastFood,
+        filterRestaurantsMarocain: _filterRestaurantsMarocain,
+        filterRestaurantsAsiatique: _filterRestaurantsAsiatique,
+        filterLine1: _filterLine1,
+        filterLine2: _filterLine2,
+        filterBusLine101: _filterBusLine101,
+        filterBusLine102: _filterBusLine102,
+        filterBusLine104: _filterBusLine104,
+        filterBusLine106: _filterBusLine106,
+      ),
       body: Column(
         children: [
           Expanded(
