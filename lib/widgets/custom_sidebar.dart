@@ -151,6 +151,7 @@ class CustomSidebar extends StatelessWidget {
                 },
               ),
               ListTile(
+
                 title: Text('Ligne 104'),
                 onTap: () {
                   onFilterChanged({'bus_line_104': true});
