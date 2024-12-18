@@ -627,6 +627,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
           ));
         }
       });
+
     }
     setState(() {
       _markers = markers;
