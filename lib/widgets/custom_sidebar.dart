@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class CustomSidebar extends StatelessWidget {
   final Function(Map<String, bool>) onFilterChanged;
 
-  // Les filtres actuels sont transmis depuis le parent
+
   final bool filterHotels5Star;
   final bool filterHotels4Star;
   final bool filterHotels3Star;
@@ -14,6 +14,7 @@ class CustomSidebar extends StatelessWidget {
   final bool filterRestaurantsFastFood;
   final bool filterRestaurantsMarocain;
   final bool filterRestaurantsAsiatique;
+  final bool filterRestaurantsOriental;
 
   final bool filterLine1;
   final bool filterLine2;
@@ -22,6 +23,7 @@ class CustomSidebar extends StatelessWidget {
   final bool filterBusLine102;
   final bool filterBusLine104;
   final bool filterBusLine106;
+  final bool filterBusLine107;
 
   // Constructeur
   CustomSidebar({
@@ -40,6 +42,8 @@ class CustomSidebar extends StatelessWidget {
     required this.filterBusLine102,
     required this.filterBusLine104,
     required this.filterBusLine106,
+    required this.filterRestaurantsOriental,
+    required this.filterBusLine107,
   });
 
   @override
@@ -111,6 +115,12 @@ class CustomSidebar extends StatelessWidget {
                 },
               ),
               ListTile(
+                title: Text('Oriental'),
+                onTap: () {
+                  onFilterChanged({'restaurant_oriental': true});
+                },
+              ),
+              ListTile(
                 title: Text('Asiatique'),
                 onTap: () {
                   onFilterChanged({'restaurant_asiatique': true});
@@ -155,6 +165,12 @@ class CustomSidebar extends StatelessWidget {
                 title: Text('Ligne 104'),
                 onTap: () {
                   onFilterChanged({'bus_line_104': true});
+                },
+              ),
+              ListTile(
+                title: Text('Ligne 107'),
+                onTap: () {
+                  onFilterChanged({'bus_line_107': true});
                 },
               ),
               ListTile(
