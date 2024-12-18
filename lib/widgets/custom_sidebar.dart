@@ -1,28 +1,22 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-// Définir un widget Stateless pour la Sidebar
+
 class CustomSidebar extends StatelessWidget {
-  // Fonction de callback pour informer le parent des filtres
   final Function(Map<String, bool>) onFilterChanged;
 
-  // Constructeur de CustomSidebar
   CustomSidebar({required this.onFilterChanged});
-
-  // Fonction pour mettre à jour les filtres
-  void _onFilterSelected(String filter, bool value) {
-    onFilterChanged({filter: value}); // Appeler la fonction callback avec le filtre mis à jour
-  }
 
   @override
   Widget build(BuildContext context) {
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
-        children: [
-          // En-tête de la sidebar
+        children: <Widget>[
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: Colors.blueGrey,
             ),
             child: Text(
               'Filtres',
@@ -32,110 +26,101 @@ class CustomSidebar extends StatelessWidget {
               ),
             ),
           ),
-
-          // Section Hôtels
           ExpansionTile(
-            leading: Icon(Icons.hotel, color: Colors.blue),
             title: Text('Hôtels'),
             children: [
-              ListTile(
-                title: Text('Hotel 5 Star'),
-                onTap: () {
-                  _onFilterSelected('Hotel 5 Star', true); // Filtrer Hotel 5 Star
+              CheckboxListTile(
+                title: Text('Hôtel 5 étoiles'),
+                value: false,
+                onChanged: (bool? value) {
+                  onFilterChanged({'hotel_5_star': value ?? false});
                 },
               ),
-              ListTile(
-                title: Text('Hotel 4 Star'),
-                onTap: () {
-                  _onFilterSelected('Hotel 4 Star', true); // Filtrer Hotel 4 Star
+              CheckboxListTile(
+                title: Text('Hôtel 4 étoiles'),
+                value: false,
+                onChanged: (bool? value) {
+                  onFilterChanged({'hotel_4_star': value ?? false});
                 },
               ),
-              ListTile(
-                title: Text('Hotel 3 Star'),
-                onTap: () {
-                  _onFilterSelected('Hotel 3 Star', true); // Filtrer Hotel 3 Star
+              CheckboxListTile(
+                title: Text('Hôtel 3 étoiles'),
+                value: false,
+                onChanged: (bool? value) {
+                  onFilterChanged({'hotel_3_star': value ?? false});
                 },
               ),
-              ListTile(
-                title: Text('Hotel 2 Star'),
-                onTap: () {
-                  _onFilterSelected('Hotel 2 Star', true); // Filtrer Hotel 2 Star
+              CheckboxListTile(
+                title: Text('Hôtel 2 étoiles'),
+                value: false,
+                onChanged: (bool? value) {
+                  onFilterChanged({'hotel_2_star': value ?? false});
                 },
               ),
             ],
           ),
-
-          // Section Restaurants
           ExpansionTile(
-            leading: Icon(Icons.restaurant, color: Colors.green),
             title: Text('Restaurants'),
             children: [
-              ListTile(
+              CheckboxListTile(
                 title: Text('Italien'),
-                onTap: () {
-                  _onFilterSelected('Restaurant Italien', true); // Filtrer Restaurant Italien
+                value: false,
+                onChanged: (bool? value) {
+                  onFilterChanged({'restaurant_italien': value ?? false});
                 },
               ),
-              ListTile(
+              CheckboxListTile(
                 title: Text('Fast Food'),
-                onTap: () {
-                  _onFilterSelected('Restaurant Fast Food', true); // Filtrer Fast Food
+                value: false,
+                onChanged: (bool? value) {
+                  onFilterChanged({'restaurant_fastfood': value ?? false});
                 },
               ),
-              ListTile(
+              CheckboxListTile(
                 title: Text('Marocain'),
-                onTap: () {
-                  _onFilterSelected('Restaurant Marocain', true); // Filtrer Marocain
+                value: false,
+                onChanged: (bool? value) {
+                  onFilterChanged({'restaurant_marocain': value ?? false});
                 },
               ),
-              ListTile(
-                title: Text('Oriental'),
-                onTap: () {
-                  _onFilterSelected('Restaurant Oriental', true); // Filtrer Oriental
-                },
-              ),
-              ListTile(
+              CheckboxListTile(
                 title: Text('Asiatique'),
-                onTap: () {
-                  _onFilterSelected('Restaurant Asiatique', true); // Filtrer Asiatique
+                value: false,
+                onChanged: (bool? value) {
+                  onFilterChanged({'restaurant_asiatique': value ?? false});
                 },
               ),
             ],
           ),
-
-          // Section Bus
           ExpansionTile(
-            leading: Icon(Icons.directions_bus, color: Colors.orange),
             title: Text('Bus'),
             children: [
-              ListTile(
+              CheckboxListTile(
                 title: Text('Ligne 101'),
-                onTap: () {
-                  _onFilterSelected('Bus Ligne 101', true); // Filtrer Bus Ligne 101
+                value: false,
+                onChanged: (bool? value) {
+                  onFilterChanged({'bus_line_101': value ?? false});
                 },
               ),
-              ListTile(
+              CheckboxListTile(
                 title: Text('Ligne 102'),
-                onTap: () {
-                  _onFilterSelected('Bus Ligne 102', true); // Filtrer Bus Ligne 102
+                value: false,
+                onChanged: (bool? value) {
+                  onFilterChanged({'bus_line_102': value ?? false});
                 },
               ),
-              ListTile(
+              CheckboxListTile(
                 title: Text('Ligne 104'),
-                onTap: () {
-                  _onFilterSelected('Bus Ligne 104', true); // Filtrer Bus Ligne 104
+                value: false,
+                onChanged: (bool? value) {
+                  onFilterChanged({'bus_line_104': value ?? false});
                 },
               ),
-              ListTile(
+              CheckboxListTile(
                 title: Text('Ligne 106'),
-                onTap: () {
-                  _onFilterSelected('Bus Ligne 106', true); // Filtrer Bus Ligne 106
-                },
-              ),
-              ListTile(
-                title: Text('Ligne 107'),
-                onTap: () {
-                  _onFilterSelected('Bus Ligne 107', true); // Filtrer Bus Ligne 107
+                value: false,
+                onChanged: (bool? value) {
+                  onFilterChanged({'bus_line_106': value ?? false});
                 },
               ),
             ],
