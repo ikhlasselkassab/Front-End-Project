@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:ikhl/stationTrame-service.dart';
 import 'package:ikhl/widgets/custom_sidebar.dart';
 import 'package:latlong2/latlong.dart';
+import 'Destination-service.dart';
 import 'hotel-service.dart';
 import 'restaurant-service.dart';
 import 'stationBus-service.dart';
@@ -37,6 +39,10 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
   List<Restaurant> _restaurants = [];
   List<StationBus> _stationsBus = [];
   List<Station> _stations = [];
+  List<LatLng> _routeCoordinates = [];
+  List<String> _destinations = [];
+
+  String? _selectedDestination;
 
 
   bool _filterHotels5Star = false;
@@ -66,6 +72,8 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
     loadRestaurants();
     loadBusStations();
     loadStations();
+    loadDestinations();
+
   }
 
   Future<void> loadHotels() async {
@@ -154,6 +162,76 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       print('Error loading bus stations: $error');
     }
   }
+
+  Future<void> loadDestinations() async {
+    try {
+      final destinations = await DestinationService.fetchAllDestinations();
+      setState(() {
+        _destinations = destinations;
+      });
+    } catch (e) {
+      _showSnackBar('Erreur lors du chargement des destinations.');
+    }
+  }
+
+  Future<void> fetchRouteToSelectedDestination() async {
+    if (_selectedDestination == null) {
+      _showSnackBar('Veuillez sélectionner une destination.');
+      return;
+    }
+
+    try {
+      // Identifier si la destination est un hôtel ou une station
+      final isHotel = _hotels.any((hotel) =>
+      hotel.name == _selectedDestination);
+      final isStation = _stations.any((station) =>
+      station.name == _selectedDestination);
+
+      if (!isHotel && !isStation) {
+        _showSnackBar('Destination inconnue.');
+        return;
+      }
+
+      // Obtenir la position actuelle de l'utilisateur
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      LatLng destinationCoordinates;
+      if (isHotel) {
+        final destinationHotel = _hotels.firstWhere((hotel) =>
+        hotel.name == _selectedDestination);
+        destinationCoordinates =
+            LatLng(destinationHotel.latitude, destinationHotel.longitude);
+      } else {
+        final destinationStation = _stations.firstWhere((station) =>
+        station.name == _selectedDestination);
+        destinationCoordinates =
+            LatLng(destinationStation.lat, destinationStation.lng);
+      }
+
+      // Charger l'itinéraire
+      final route = await HotelService.fetchRoute(
+        position.latitude,
+        position.longitude,
+        destinationCoordinates.latitude,
+        destinationCoordinates.longitude,
+      );
+
+      setState(() {
+        _routeCoordinates =
+            route.map((coord) => LatLng(coord[0], coord[1])).toList();
+      });
+      _showSnackBar(
+          'Itinéraire vers $_selectedDestination chargé avec succès !');
+    } catch (error) {
+      _showSnackBar('Erreur : $error');
+    }
+  }
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)));
+  }
+
 
   void _showBusStationDetails(StationBus stationBus) {
     showDialog(
@@ -687,6 +765,71 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       ),
       body: Column(
         children: [
+          // Barre de recherche et bouton de tracé d'itinéraire
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white, // Fond blanc
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: const Color.fromARGB(255, 201, 143, 211),
+                        width: 2,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Autocomplete<String>(
+                        optionsBuilder: (TextEditingValue textEditingValue) {
+                          if (textEditingValue.text.isEmpty) {
+                            return const Iterable<String>.empty();
+                          }
+                          return _destinations.where((destination) =>
+                              destination.toLowerCase().contains(
+                                  textEditingValue.text.toLowerCase()));
+                        },
+                        onSelected: (String selection) {
+                          setState(() {
+                            _selectedDestination = selection;
+                          });
+                        },
+                        fieldViewBuilder:
+                            (context, controller, focusNode, onEditingComplete) {
+                          return TextField(
+                            controller: controller,
+                            focusNode: focusNode,
+                            decoration: InputDecoration(
+                              hintText: 'Rechercher une destination',
+                              hintStyle: TextStyle(fontSize: 14),
+                              border: InputBorder.none,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: fetchRouteToSelectedDestination,
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text('Tracer Itinéraire'),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 8),
+
+          // Carte affichant les marqueurs et les itinéraires
           Expanded(
             child: FlutterMap(
               options: MapOptions(
@@ -699,12 +842,20 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
                   subdomains: ['a', 'b', 'c'],
                 ),
                 MarkerLayer(markers: _markers),
+                if (_routeCoordinates.isNotEmpty)
+                  PolylineLayer(
+                    polylines: [
+                      Polyline(
+                        points: _routeCoordinates,
+                        color: Colors.blue,
+                        strokeWidth: 4,
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),
         ],
       ),
     );
-  }
-}
-
+  }}
