@@ -525,6 +525,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
         markers.add(Marker(
           point: LatLng(hotel.latitude, hotel.longitude),
           builder: (ctx) => GestureDetector(
+            onTap: () => _showHotelDetails(hotel),
             child: Icon(Icons.hotel, color: Colors.redAccent, size: 15),
           ),
         ));
@@ -534,6 +535,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
         markers.add(Marker(
           point: LatLng(restaurant.latitude, restaurant.longitude),
           builder: (ctx) => GestureDetector(
+            onTap: () => _showRestaurantDetails(restaurant),
             child: Icon(Icons.restaurant, color: Colors.purple, size: 15),
           ),
         ));
@@ -542,6 +544,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
         markers.add(Marker(
           point: LatLng(station.lat, station.lng),
           builder: (ctx) => GestureDetector(
+            onTap: () => _showBusStationDetails(station),
             child: Icon(Icons.directions_bus, color: Colors.green, size: 15),
           ),
         ));
@@ -551,6 +554,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
         markers.add(Marker(
           point: LatLng(stationT.lat, stationT.lng),
           builder: (ctx) => GestureDetector(
+            onTap: () => _showStationDetails(stationT),
             child: Icon(Icons.train, color: Colors.blue, size: 15),
           ),
         ));
@@ -566,6 +570,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
           markers.add(Marker(
             point: LatLng(hotel.latitude, hotel.longitude),
             builder: (ctx) => GestureDetector(
+              onTap: () => _showHotelDetails(hotel),
               child: Icon(Icons.hotel, color: Colors.redAccent, size: 35),
             ),
           ));
@@ -584,6 +589,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
           markers.add(Marker(
             point: LatLng(restaurant.latitude, restaurant.longitude),
             builder: (ctx) => GestureDetector(
+              onTap: () => _showRestaurantDetails(restaurant),
               child: Icon(Icons.restaurant, color: Colors.purple, size: 35),
             ),
           ));
@@ -601,6 +607,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
           markers.add(Marker(
             point: LatLng(station.lat, station.lng),
             builder: (ctx) => GestureDetector(
+              onTap: () => _showBusStationDetails(station),
               child: Icon(Icons.directions_bus, color: Colors.greenAccent, size: 35),
             ),
           ));
@@ -614,7 +621,8 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
           markers.add(Marker(
             point: LatLng(stationT.lat, stationT.lng),
             builder: (ctx) => GestureDetector(
-              child: Icon(Icons.train, color: _filterLine1 ? Colors.blueAccent : Colors.orangeAccent, size: 35),
+              onTap: () => _showStationDetails(stationT),
+              child: Icon(Icons.train, color:  Colors.blueAccent , size: 35),
             ),
           ));
         }
