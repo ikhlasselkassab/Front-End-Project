@@ -73,7 +73,6 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
     loadBusStations();
     loadStations();
     loadDestinations();
-
   }
 
   Future<void> loadHotels() async {
@@ -84,10 +83,11 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
         _markers.addAll(_hotels.map((hotel) {
           return Marker(
             point: LatLng(hotel.latitude, hotel.longitude),
-            builder: (ctx) => GestureDetector(
-              onTap: () => _showHotelDetails(hotel),
-              child: Icon(Icons.hotel, color: Colors.redAccent, size: 15),
-            ),
+            builder: (ctx) =>
+                GestureDetector(
+                  onTap: () => _showHotelDetails(hotel),
+                  child: Icon(Icons.hotel, color: Colors.redAccent, size: 15),
+                ),
           );
         }).toList());
       });
@@ -105,10 +105,11 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
         _markers.addAll(_restaurants.map((restaurant) {
           return Marker(
             point: LatLng(restaurant.latitude, restaurant.longitude),
-            builder: (ctx) => GestureDetector(
-              onTap: () => _showRestaurantDetails(restaurant),
-              child: Icon(Icons.restaurant, color: Colors.purple, size: 15),
-            ),
+            builder: (ctx) =>
+                GestureDetector(
+                  onTap: () => _showRestaurantDetails(restaurant),
+                  child: Icon(Icons.restaurant, color: Colors.purple, size: 15),
+                ),
           );
         }).toList());
       });
@@ -116,6 +117,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       print('Error loading restaurants: $error');
     }
   }
+
   Future<void> loadStations() async {
     try {
       final stations = await StationTrameService.fetchStations();
@@ -124,18 +126,14 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
         _markers.addAll(_stations.map((station) {
           return Marker(
             point: LatLng(station.lat, station.lng),
-            builder: (ctx) => GestureDetector(
-              onTap: () => _showStationDetails(station),
-              child: Icon(Icons.train, color: Colors.blueAccent, size: 15),
-            ),
+            builder: (ctx) =>
+                GestureDetector(
+                  onTap: () => _showStationDetails(station),
+                  child: Icon(Icons.train, color: Colors.blueAccent, size: 15),
+                ),
           );
         }).toList());
       });
-
-
-
-
-
     } catch (error) {
       print('Error loading stations: $error');
     }
@@ -151,10 +149,12 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
         _markers.addAll(_stationsBus.map((station) {
           return Marker(
             point: LatLng(station.lat, station.lng),
-            builder: (ctx) => GestureDetector(
-              onTap: () => _showBusStationDetails(station),
-              child: Icon(Icons.directions_bus, color: Colors.greenAccent, size: 15),
-            ),
+            builder: (ctx) =>
+                GestureDetector(
+                  onTap: () => _showBusStationDetails(station),
+                  child: Icon(Icons.directions_bus, color: Colors.greenAccent,
+                      size: 15),
+                ),
           );
         }).toList());
       });
@@ -227,6 +227,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       _showSnackBar('Erreur : $error');
     }
   }
+
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)));
@@ -272,7 +273,8 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
                 ),
                 SizedBox(height: 10),
                 Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 8.0, horizontal: 12.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
@@ -307,16 +309,17 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
                         ),
                       ),
                       SizedBox(height: 10),
-                      ...stationBus.lines.map((line) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2.0),
-                        child: Text(
-                          '- $line',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.blue.shade800,
-                          ),
-                        ),
-                      )),
+                      ...stationBus.lines.map((line) =>
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 2.0),
+                            child: Text(
+                              '- $line',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.blue.shade800,
+                              ),
+                            ),
+                          )),
                     ],
                   ),
                 SizedBox(height: 20),
@@ -325,7 +328,8 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.blue.shade700,
-                    padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12.0, horizontal: 24.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
@@ -350,7 +354,10 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
             borderRadius: BorderRadius.circular(20.0),
           ),
           child: Container(
-            width: MediaQuery.of(context).size.width * 0.7,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width * 0.7,
             padding: const EdgeInsets.all(20.0),
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -437,7 +444,6 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
   }
 
 
-
   void _showHotelDetails(Hotel hotel) {
     showDialog(
       context: context,
@@ -447,7 +453,10 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
             borderRadius: BorderRadius.circular(20.0),
           ),
           child: Container(
-            width: MediaQuery.of(context).size.width * 0.7,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width * 0.7,
             padding: const EdgeInsets.all(20.0),
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -507,6 +516,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       },
     );
   }
+
   void _showStationDetails(Station station) {
     showDialog(
       context: context,
@@ -593,8 +603,10 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
 
   void _updateMarkers() {
     List<Marker> markers = [];
-    if (!_filterHotels5Star && !_filterHotels4Star && !_filterHotels3Star && !_filterHotels2Star &&
-        !_filterRestaurantsItalien && !_filterRestaurantsFastFood && !_filterRestaurantsMarocain &&
+    if (!_filterHotels5Star && !_filterHotels4Star && !_filterHotels3Star &&
+        !_filterHotels2Star &&
+        !_filterRestaurantsItalien && !_filterRestaurantsFastFood &&
+        !_filterRestaurantsMarocain &&
         !_filterRestaurantsOriental && !_filterRestaurantsAsiatique &&
         !_filterBusLine101 && !_filterBusLine102 && !_filterBusLine104 &&
         !_filterBusLine106 && !_filterBusLine107 &&
@@ -602,44 +614,50 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       _hotels.forEach((hotel) {
         markers.add(Marker(
           point: LatLng(hotel.latitude, hotel.longitude),
-          builder: (ctx) => GestureDetector(
-            onTap: () => _showHotelDetails(hotel),
-            child: Icon(Icons.hotel, color: Colors.redAccent, size: 15),
-          ),
+          builder: (ctx) =>
+              GestureDetector(
+                onTap: () => _showHotelDetails(hotel),
+                child: Icon(Icons.hotel, color: Colors.redAccent, size: 15),
+              ),
         ));
       });
 
       _restaurants.forEach((restaurant) {
         markers.add(Marker(
           point: LatLng(restaurant.latitude, restaurant.longitude),
-          builder: (ctx) => GestureDetector(
-            onTap: () => _showRestaurantDetails(restaurant),
-            child: Icon(Icons.restaurant, color: Colors.purple, size: 15),
-          ),
+          builder: (ctx) =>
+              GestureDetector(
+                onTap: () => _showRestaurantDetails(restaurant),
+                child: Icon(Icons.restaurant, color: Colors.purple, size: 15),
+              ),
         ));
       });
       _stationsBus.forEach((station) {
         markers.add(Marker(
           point: LatLng(station.lat, station.lng),
-          builder: (ctx) => GestureDetector(
-            onTap: () => _showBusStationDetails(station),
-            child: Icon(Icons.directions_bus, color: Colors.green, size: 15),
-          ),
+          builder: (ctx) =>
+              GestureDetector(
+                onTap: () => _showBusStationDetails(station),
+                child: Icon(
+                    Icons.directions_bus, color: Colors.green, size: 15),
+              ),
         ));
       });
 
       _stations.forEach((stationT) {
         markers.add(Marker(
           point: LatLng(stationT.lat, stationT.lng),
-          builder: (ctx) => GestureDetector(
-            onTap: () => _showStationDetails(stationT),
-            child: Icon(Icons.train, color: Colors.blue, size: 15),
-          ),
+          builder: (ctx) =>
+              GestureDetector(
+                onTap: () => _showStationDetails(stationT),
+                child: Icon(Icons.train, color: Colors.blue, size: 15),
+              ),
         ));
       });
     }
 
-    if (_filterHotels5Star || _filterHotels4Star || _filterHotels3Star || _filterHotels2Star) {
+    if (_filterHotels5Star || _filterHotels4Star || _filterHotels3Star ||
+        _filterHotels2Star) {
       _hotels.forEach((hotel) {
         if ((_filterHotels5Star && hotel.etoiles == 5) ||
             (_filterHotels4Star && hotel.etoiles == 4) ||
@@ -647,35 +665,43 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
             (_filterHotels2Star && hotel.etoiles == 2)) {
           markers.add(Marker(
             point: LatLng(hotel.latitude, hotel.longitude),
-            builder: (ctx) => GestureDetector(
-              onTap: () => _showHotelDetails(hotel),
-              child: Icon(Icons.hotel, color: Colors.redAccent, size: 35),
-            ),
+            builder: (ctx) =>
+                GestureDetector(
+                  onTap: () => _showHotelDetails(hotel),
+                  child: Icon(Icons.hotel, color: Colors.redAccent, size: 35),
+                ),
           ));
         }
       });
     }
 
-    if (_filterRestaurantsItalien || _filterRestaurantsFastFood || _filterRestaurantsMarocain ||
+    if (_filterRestaurantsItalien || _filterRestaurantsFastFood ||
+        _filterRestaurantsMarocain ||
         _filterRestaurantsOriental || _filterRestaurantsAsiatique) {
       _restaurants.forEach((restaurant) {
         if ((_filterRestaurantsItalien && restaurant.categorie == 'Italien') ||
-            (_filterRestaurantsFastFood && restaurant.categorie == 'Fast Food') ||
-            (_filterRestaurantsMarocain && restaurant.categorie == 'Marocain') ||
-            (_filterRestaurantsOriental && restaurant.categorie == 'Oriental') ||
-            (_filterRestaurantsAsiatique && restaurant.categorie == 'Asiatique')) {
+            (_filterRestaurantsFastFood &&
+                restaurant.categorie == 'Fast Food') ||
+            (_filterRestaurantsMarocain &&
+                restaurant.categorie == 'Marocain') ||
+            (_filterRestaurantsOriental &&
+                restaurant.categorie == 'Oriental') ||
+            (_filterRestaurantsAsiatique &&
+                restaurant.categorie == 'Asiatique')) {
           markers.add(Marker(
             point: LatLng(restaurant.latitude, restaurant.longitude),
-            builder: (ctx) => GestureDetector(
-              onTap: () => _showRestaurantDetails(restaurant),
-              child: Icon(Icons.restaurant, color: Colors.purple, size: 35),
-            ),
+            builder: (ctx) =>
+                GestureDetector(
+                  onTap: () => _showRestaurantDetails(restaurant),
+                  child: Icon(Icons.restaurant, color: Colors.purple, size: 35),
+                ),
           ));
         }
       });
     }
 
-    if (_filterBusLine101 || _filterBusLine102 || _filterBusLine104 || _filterBusLine106 || _filterBusLine107) {
+    if (_filterBusLine101 || _filterBusLine102 || _filterBusLine104 ||
+        _filterBusLine106 || _filterBusLine107) {
       _stationsBus.forEach((station) {
         if ((_filterBusLine101 && station.lines.contains("L101")) ||
             (_filterBusLine102 && station.lines.contains("L102")) ||
@@ -684,10 +710,12 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
             (_filterBusLine107 && station.lines.contains("L107"))) {
           markers.add(Marker(
             point: LatLng(station.lat, station.lng),
-            builder: (ctx) => GestureDetector(
-              onTap: () => _showBusStationDetails(station),
-              child: Icon(Icons.directions_bus, color: Colors.greenAccent, size: 35),
-            ),
+            builder: (ctx) =>
+                GestureDetector(
+                  onTap: () => _showBusStationDetails(station),
+                  child: Icon(Icons.directions_bus, color: Colors.greenAccent,
+                      size: 35),
+                ),
           ));
         }
       });
@@ -698,20 +726,19 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
             (_filterLine2 && stationT.lines.contains("L2"))) {
           markers.add(Marker(
             point: LatLng(stationT.lat, stationT.lng),
-            builder: (ctx) => GestureDetector(
-              onTap: () => _showStationDetails(stationT),
-              child: Icon(Icons.train, color:  Colors.blueAccent , size: 35),
-            ),
+            builder: (ctx) =>
+                GestureDetector(
+                  onTap: () => _showStationDetails(stationT),
+                  child: Icon(Icons.train, color: Colors.blueAccent, size: 35),
+                ),
           ));
         }
       });
-
     }
     setState(() {
       _markers = markers;
     });
   }
-
 
 
   void _onFilterChanged(Map<String, bool> filters) {
@@ -765,7 +792,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       ),
       body: Column(
         children: [
-          // Barre de recherche et bouton de tracé d'itinéraire
+          // Barre de recherche avec bouton
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
             child: Row(
@@ -773,7 +800,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white, // Fond blanc
+                      color: Colors.white, // Fond blanc pour la barre
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: const Color.fromARGB(255, 201, 143, 211),
@@ -797,7 +824,8 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
                           });
                         },
                         fieldViewBuilder:
-                            (context, controller, focusNode, onEditingComplete) {
+                            (context, controller, focusNode,
+                            onEditingComplete) {
                           return TextField(
                             controller: controller,
                             focusNode: focusNode,
@@ -817,7 +845,8 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
                   onPressed: fetchRouteToSelectedDestination,
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    textStyle: TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.bold),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -827,9 +856,11 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
               ],
             ),
           ),
-          SizedBox(height: 8),
 
-          // Carte affichant les marqueurs et les itinéraires
+          // Espacement entre la barre de recherche et la carte
+          SizedBox(height: 50),
+
+          // Carte en bas
           Expanded(
             child: FlutterMap(
               options: MapOptions(
@@ -858,4 +889,5 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
         ],
       ),
     );
-  }}
+  }
+}

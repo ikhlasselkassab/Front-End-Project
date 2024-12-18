@@ -63,32 +63,28 @@ class CustomSidebar extends StatelessWidget {
           ExpansionTile(
             title: Text('Hôtels'),
             children: [
-              CheckboxListTile(
+              ListTile(
                 title: Text('Hôtel 5 étoiles'),
-                value: filterHotels5Star,
-                onChanged: (bool? value) {
-                  onFilterChanged({'hotel_5_star': value ?? false});
+                onTap: () {
+                  onFilterChanged({'hotel_5_star': true});
                 },
               ),
-              CheckboxListTile(
+              ListTile(
                 title: Text('Hôtel 4 étoiles'),
-                value: filterHotels4Star,
-                onChanged: (bool? value) {
-                  onFilterChanged({'hotel_4_star': value ?? false});
+                onTap: () {
+                  onFilterChanged({'hotel_4_star': true});
                 },
               ),
-              CheckboxListTile(
+              ListTile(
                 title: Text('Hôtel 3 étoiles'),
-                value: filterHotels3Star,
-                onChanged: (bool? value) {
-                  onFilterChanged({'hotel_3_star': value ?? false});
+                onTap: () {
+                  onFilterChanged({'hotel_3_star': true});
                 },
               ),
-              CheckboxListTile(
+              ListTile(
                 title: Text('Hôtel 2 étoiles'),
-                value: filterHotels2Star,
-                onChanged: (bool? value) {
-                  onFilterChanged({'hotel_2_star': value ?? false});
+                onTap: () {
+                  onFilterChanged({'hotel_2_star': true});
                 },
               ),
             ],
@@ -96,32 +92,28 @@ class CustomSidebar extends StatelessWidget {
           ExpansionTile(
             title: Text('Restaurants'),
             children: [
-              CheckboxListTile(
+              ListTile(
                 title: Text('Italien'),
-                value: filterRestaurantsItalien,
-                onChanged: (bool? value) {
-                  onFilterChanged({'restaurant_italien': value ?? false});
+                onTap: () {
+                  onFilterChanged({'restaurant_italien': true});
                 },
               ),
-              CheckboxListTile(
+              ListTile(
                 title: Text('Fast Food'),
-                value: filterRestaurantsFastFood,
-                onChanged: (bool? value) {
-                  onFilterChanged({'restaurant_fastfood': value ?? false});
+                onTap: () {
+                  onFilterChanged({'restaurant_fastfood': true});
                 },
               ),
-              CheckboxListTile(
+              ListTile(
                 title: Text('Marocain'),
-                value: filterRestaurantsMarocain,
-                onChanged: (bool? value) {
-                  onFilterChanged({'restaurant_marocain': value ?? false});
+                onTap: () {
+                  onFilterChanged({'restaurant_marocain': true});
                 },
               ),
-              CheckboxListTile(
+              ListTile(
                 title: Text('Asiatique'),
-                value: filterRestaurantsAsiatique,
-                onChanged: (bool? value) {
-                  onFilterChanged({'restaurant_asiatique': value ?? false});
+                onTap: () {
+                  onFilterChanged({'restaurant_asiatique': true});
                 },
               ),
             ],
@@ -129,18 +121,16 @@ class CustomSidebar extends StatelessWidget {
           ExpansionTile(
             title: Text('Stations de Tramway'),
             children: [
-              CheckboxListTile(
+              ListTile(
                 title: Text('Ligne 1'),
-                value: filterLine1,
-                onChanged: (bool? value) {
-                  onFilterChanged({'line_1': value ?? false});
+                onTap: () {
+                  onFilterChanged({'line_1': true});
                 },
               ),
-              CheckboxListTile(
+              ListTile(
                 title: Text('Ligne 2'),
-                value: filterLine2,
-                onChanged: (bool? value) {
-                  onFilterChanged({'line_2': value ?? false});
+                onTap: () {
+                  onFilterChanged({'line_2': true});
                 },
               ),
             ],
@@ -148,32 +138,28 @@ class CustomSidebar extends StatelessWidget {
           ExpansionTile(
             title: Text('Bus'),
             children: [
-              CheckboxListTile(
+              ListTile(
                 title: Text('Ligne 101'),
-                value: filterBusLine101,
-                onChanged: (bool? value) {
-                  onFilterChanged({'bus_line_101': value ?? false});
+                onTap: () {
+                  onFilterChanged({'bus_line_101': true});
                 },
               ),
-              CheckboxListTile(
+              ListTile(
                 title: Text('Ligne 102'),
-                value: filterBusLine102,
-                onChanged: (bool? value) {
-                  onFilterChanged({'bus_line_102': value ?? false});
+                onTap: () {
+                  onFilterChanged({'bus_line_102': true});
                 },
               ),
-              CheckboxListTile(
+              ListTile(
                 title: Text('Ligne 104'),
-                value: filterBusLine104,
-                onChanged: (bool? value) {
-                  onFilterChanged({'bus_line_104': value ?? false});
+                onTap: () {
+                  onFilterChanged({'bus_line_104': true});
                 },
               ),
-              CheckboxListTile(
+              ListTile(
                 title: Text('Ligne 106'),
-                value: filterBusLine106,
-                onChanged: (bool? value) {
-                  onFilterChanged({'bus_line_106': value ?? false});
+                onTap: () {
+                  onFilterChanged({'bus_line_106': true});
                 },
               ),
             ],
