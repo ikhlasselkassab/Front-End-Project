@@ -40,6 +40,10 @@ dependencies:
   flutter_map: ^5.0.0
   latlong2: ^0.9.1
   url_launcher: ^6.1.0
+  get: ^4.6.6
+  flutter_native_splash: ^2.4.3
+  smooth_page_indicator: ^1.2.0+3
+  iconsax_flutter: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -62,6 +66,11 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/logo.png
+    - assets/images/on_boarding_images/hotel.jpeg
+    - assets/images/on_boarding_images/resto.jpeg
+    - assets/images/on_boarding_images/transport.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

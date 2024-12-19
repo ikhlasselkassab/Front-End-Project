@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ikhl/screens/map_screen.dart';
+import 'package:ikhl/screens/onboarding.dart';
 
 
 void main() {
@@ -15,7 +16,7 @@ class HotelMapApp extends StatelessWidget {
         primarySwatch: Colors.blueGrey,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HotelMapScreen()
+      home: OnBoardingScreen()
     );
   }
 }

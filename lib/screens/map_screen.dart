@@ -40,7 +40,6 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
 
   String? _selectedDestination;
 
-
   bool _filterHotels5Star = false;
   bool _filterHotels4Star = false;
   bool _filterHotels3Star = false;
@@ -169,7 +168,6 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       print('Error loading stations: $error');
     }
   }
-
 
   Future<void> loadBusStations() async {
     try {
