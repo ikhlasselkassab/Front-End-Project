@@ -112,6 +112,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       print('Error loading restaurants: $error');
     }
   }
+
   void _showRestaurantDetails(Restaurant restaurant) {
     showDialog(
       context: context,
@@ -120,32 +121,32 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       },
     );
   }
-  void _showStationDetails(Station station){
+
+  void _showStationDetails(Station station) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return StationDialog(station : station);
+        return StationDialog(station: station);
       },
     );
-
   }
-  void _showBusStationDetails(StationBus stationBus){
+
+  void _showBusStationDetails(StationBus stationBus) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return BusStationDialog(stationBus : stationBus);
+        return BusStationDialog(stationBus: stationBus);
       },
     );
-
   }
-  void _showHotelDetails(Hotel hotel){
+
+  void _showHotelDetails(Hotel hotel) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return HotelDialog(hotel : hotel);
+        return HotelDialog(hotel: hotel);
       },
     );
-
   }
 
   Future<void> loadStations() async {
@@ -278,6 +279,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       );
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -286,23 +288,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       ),
       drawer: CustomSidebar(
         onFilterChanged: _onFilterChanged,
-        filterHotels5Star: _filterHotels5Star,
-        filterHotels4Star: _filterHotels4Star,
-        filterHotels3Star: _filterHotels3Star,
-        filterHotels2Star: _filterHotels2Star,
-        filterRestaurantsItalien: _filterRestaurantsItalien,
-        filterRestaurantsFastFood: _filterRestaurantsFastFood,
-        filterRestaurantsMarocain: _filterRestaurantsMarocain,
-        filterRestaurantsOriental: _filterRestaurantsOriental,
-        filterRestaurantsAsiatique: _filterRestaurantsAsiatique,
-        filterLine1: _filterLine1,
-        filterLine2: _filterLine2,
-        filterBusLine101: _filterBusLine101,
-        filterBusLine102: _filterBusLine102,
-        filterBusLine104: _filterBusLine104,
-        filterBusLine106: _filterBusLine106,
-        filterBusLine107: _filterBusLine107,
-
+        filters: filters.activeFilters,
       ),
       body: Column(
         children: [

@@ -48,7 +48,7 @@ class SearchBarWidget extends StatelessWidget {
                       controller: controller,
                       focusNode: focusNode,
                       decoration: InputDecoration(
-                        hintText: 'Rechercher une destination',
+                        hintText: 'Hotels, restaurants, tram, bus ...',
                         hintStyle: TextStyle(fontSize: 14),
                         border: InputBorder.none,
                       ),

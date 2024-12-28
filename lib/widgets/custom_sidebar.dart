@@ -3,47 +3,11 @@ import 'package:flutter/material.dart';
 
 class CustomSidebar extends StatelessWidget {
   final Function(Map<String, bool>) onFilterChanged;
+  final Map<String, bool> filters;
 
-
-  final bool filterHotels5Star;
-  final bool filterHotels4Star;
-  final bool filterHotels3Star;
-  final bool filterHotels2Star;
-
-  final bool filterRestaurantsItalien;
-  final bool filterRestaurantsFastFood;
-  final bool filterRestaurantsMarocain;
-  final bool filterRestaurantsAsiatique;
-  final bool filterRestaurantsOriental;
-
-  final bool filterLine1;
-  final bool filterLine2;
-
-  final bool filterBusLine101;
-  final bool filterBusLine102;
-  final bool filterBusLine104;
-  final bool filterBusLine106;
-  final bool filterBusLine107;
-
-  // Constructeur
   CustomSidebar({
     required this.onFilterChanged,
-    required this.filterHotels5Star,
-    required this.filterHotels4Star,
-    required this.filterHotels3Star,
-    required this.filterHotels2Star,
-    required this.filterRestaurantsItalien,
-    required this.filterRestaurantsFastFood,
-    required this.filterRestaurantsMarocain,
-    required this.filterRestaurantsAsiatique,
-    required this.filterLine1,
-    required this.filterLine2,
-    required this.filterBusLine101,
-    required this.filterBusLine102,
-    required this.filterBusLine104,
-    required this.filterBusLine106,
-    required this.filterRestaurantsOriental,
-    required this.filterBusLine107,
+    required this.filters,
   });
 
   @override
@@ -54,7 +18,7 @@ class CustomSidebar extends StatelessWidget {
         children: <Widget>[
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blueGrey,
+              color: Color(0xFF2CBFD7), // Updated color
             ),
             child: Text(
               'Filtres',
@@ -64,125 +28,62 @@ class CustomSidebar extends StatelessWidget {
               ),
             ),
           ),
-          ExpansionTile(
-            title: Text('Hôtels'),
-            children: [
-              ListTile(
-                title: Text('Hôtel 5 étoiles'),
-                onTap: () {
-                  onFilterChanged({'hotel_5_star': true});
-                },
-              ),
-              ListTile(
-                title: Text('Hôtel 4 étoiles'),
-                onTap: () {
-                  onFilterChanged({'hotel_4_star': true});
-                },
-              ),
-              ListTile(
-                title: Text('Hôtel 3 étoiles'),
-                onTap: () {
-                  onFilterChanged({'hotel_3_star': true});
-                },
-              ),
-              ListTile(
-                title: Text('Hôtel 2 étoiles'),
-                onTap: () {
-                  onFilterChanged({'hotel_2_star': true});
-                },
-              ),
-            ],
+          _buildExpansionTile(
+            title: 'Hôtels',
+            options: {
+              'hotel_5_star': 'Hôtel 5 étoiles',
+              'hotel_4_star': 'Hôtel 4 étoiles',
+              'hotel_3_star': 'Hôtel 3 étoiles',
+              'hotel_2_star': 'Hôtel 2 étoiles',
+            },
           ),
-          ExpansionTile(
-            title: Text('Restaurants'),
-            children: [
-              ListTile(
-                title: Text('Italien'),
-                onTap: () {
-                  onFilterChanged({'restaurant_italien': true});
-                },
-              ),
-              ListTile(
-                title: Text('Fast Food'),
-                onTap: () {
-                  onFilterChanged({'restaurant_fastfood': true});
-                },
-              ),
-              ListTile(
-                title: Text('Marocain'),
-                onTap: () {
-                  onFilterChanged({'restaurant_marocain': true});
-                },
-              ),
-              ListTile(
-                title: Text('Oriental'),
-                onTap: () {
-                  onFilterChanged({'restaurant_oriental': true});
-                },
-              ),
-              ListTile(
-                title: Text('Asiatique'),
-                onTap: () {
-                  onFilterChanged({'restaurant_asiatique': true});
-                },
-              ),
-            ],
+          _buildExpansionTile(
+            title: 'Restaurants',
+            options: {
+              'restaurant_italien': 'Italien',
+              'restaurant_fastfood': 'Fast Food',
+              'restaurant_marocain': 'Marocain',
+              'restaurant_oriental': 'Oriental',
+              'restaurant_asiatique': 'Asiatique',
+            },
           ),
-          ExpansionTile(
-            title: Text('Stations de Tramway'),
-            children: [
-              ListTile(
-                title: Text('Ligne 1'),
-                onTap: () {
-                  onFilterChanged({'line_1': true});
-                },
-              ),
-              ListTile(
-                title: Text('Ligne 2'),
-                onTap: () {
-                  onFilterChanged({'line_2': true});
-                },
-              ),
-            ],
+          _buildExpansionTile(
+            title: 'Stations de Tramway',
+            options: {
+              'line_1': 'Ligne 1',
+              'line_2': 'Ligne 2',
+            },
           ),
-          ExpansionTile(
-            title: Text('Bus'),
-            children: [
-              ListTile(
-                title: Text('Ligne 101'),
-                onTap: () {
-                  onFilterChanged({'bus_line_101': true});
-                },
-              ),
-              ListTile(
-                title: Text('Ligne 102'),
-                onTap: () {
-                  onFilterChanged({'bus_line_102': true});
-                },
-              ),
-              ListTile(
-
-                title: Text('Ligne 104'),
-                onTap: () {
-                  onFilterChanged({'bus_line_104': true});
-                },
-              ),
-              ListTile(
-                title: Text('Ligne 107'),
-                onTap: () {
-                  onFilterChanged({'bus_line_107': true});
-                },
-              ),
-              ListTile(
-                title: Text('Ligne 106'),
-                onTap: () {
-                  onFilterChanged({'bus_line_106': true});
-                },
-              ),
-            ],
+          _buildExpansionTile(
+            title: 'Bus',
+            options: {
+              'bus_line_101': 'Ligne 101',
+              'bus_line_102': 'Ligne 102',
+              'bus_line_104': 'Ligne 104',
+              'bus_line_106': 'Ligne 106',
+              'bus_line_107': 'Ligne 107',
+            },
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildExpansionTile({
+    required String title,
+    required Map<String, String> options,
+  }) {
+    return ExpansionTile(
+      title: Text(title),
+      children: options.entries.map((entry) {
+        return CheckboxListTile(
+          title: Text(entry.value),
+          value: filters[entry.key] ?? false,
+          onChanged: (bool? value) {
+            onFilterChanged({entry.key: value ?? false});
+          },
+        );
+      }).toList(),
     );
   }
 }
