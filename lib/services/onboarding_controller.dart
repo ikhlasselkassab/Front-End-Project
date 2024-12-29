@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ikhl/screens/home_screen.dart';
 
 import '../screens/map_screen.dart';
 
@@ -29,7 +30,7 @@ class OnBoardingController extends GetxController {
       print("Navigating to HotelMapScreen");
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HotelMapScreen()),
+        MaterialPageRoute(builder: (context) => HomeScreen()),
       );  // Use Navigator to push the HotelMapScreen
     } else {
       int page = curretPageIndex.value + 1;

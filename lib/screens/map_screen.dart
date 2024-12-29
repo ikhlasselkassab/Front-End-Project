@@ -37,6 +37,8 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
   List<Station> _stations = [];
   List<LatLng> _routeCoordinates = [];
   List<String> _destinations = [];
+  late LatLng _currentPosition;
+  late MapController _mapController;
 
   String? _selectedDestination;
 
@@ -63,12 +65,76 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
   @override
   void initState() {
     super.initState();
+    _mapController = MapController(); 
     loadHotels();
     loadRestaurants();
     loadBusStations();
     loadStations();
     loadDestinations();
+    loadAirport();
+    loadGares();
   }
+  Future<void> loadGares() async {
+  try {
+    // Coordonnées de la Gare Rabat Agdal
+    final gareAgdalCoordinates = LatLng(34.00232205505089, -6.855607461943176);
+    
+    // Coordonnées de la Gare Rabat Ville
+    final gareVilleCoordinates = LatLng(34.016568773487144, -6.8355616582435825);
+
+    // Ajouter le marqueur pour la Gare Rabat Agdal
+    setState(() {
+      _markers.add(Marker(
+        point: gareAgdalCoordinates,
+        builder: (ctx) => GestureDetector(
+          onTap: () {
+            // Afficher un message ou effectuer une action lorsque le marqueur est touché
+            _showSnackBar('Gare Rabat Agdal');
+          },
+          child: Icon(Icons.train, color: Colors.orange, size: 20),
+        ),
+      ));
+
+      // Ajouter le marqueur pour la Gare Rabat Ville
+      _markers.add(Marker(
+        point: gareVilleCoordinates,
+        builder: (ctx) => GestureDetector(
+          onTap: () {
+            // Afficher un message ou effectuer une action lorsque le marqueur est touché
+            _showSnackBar('Gare Rabat Ville');
+          },
+          child: Icon(Icons.train, color: Colors.orange, size: 30),
+        ),
+      ));
+    });
+  } catch (error) {
+    print('Erreur lors du chargement des gares: $error');
+  }
+}
+
+  Future<void> loadAirport() async {
+  try {
+    // Coordonnées de l'Aéroport de Rabat-Salé
+    final airportCoordinates = LatLng(34.05049670986896, -6.7495096);
+
+    // Ajouter le marqueur pour l'aéroport
+    setState(() {
+      _markers.add(Marker(
+        point: airportCoordinates,
+        builder: (ctx) => GestureDetector(
+          onTap: () {
+            // Afficher un message ou effectuer une action lorsque le marqueur est touché
+            _showSnackBar('Aéroport de Rabat-Salé');
+          },
+          child: Icon(Icons.airplanemode_active, color: Colors.blue, size: 30),
+        ),
+      ));
+    });
+  } catch (error) {
+    print('Erreur lors du chargement de l\'aéroport: $error');
+  }
+}
+
 
   Future<void> loadHotels() async {
     try {
@@ -193,66 +259,105 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
     }
   }
 
-  Future<void> loadDestinations() async {
-    try {
-      final destinations = await DestinationService.fetchAllDestinations();
-      setState(() {
-        _destinations = destinations;
-      });
-    } catch (e) {
-      _showSnackBar('Erreur lors du chargement des destinations.');
-    }
+Future<void> loadDestinations() async {
+  try {
+    final destinations = await DestinationService.fetchAllDestinations();
+    setState(() {
+      _destinations = destinations;
+      _destinations.addAll([
+        'Gare Rabat Agdal',
+        'Gare Rabat Ville',
+        'Aéroport de Rabat-Salé',
+      ]);
+    });
+  } catch (e) {
+    _showSnackBar('Erreur lors du chargement des destinations.');
   }
+}
+
 
   Future<void> fetchRouteToSelectedDestination() async {
-    if (_selectedDestination == null) {
-      _showSnackBar('Veuillez sélectionner une destination.');
+  if (_selectedDestination == null) {
+    _showSnackBar('Veuillez sélectionner une destination.');
+    return;
+  }
+
+  try {
+    final isHotel = _hotels.any((hotel) => hotel.name == _selectedDestination);
+    final isStation = _stations.any((station) => station.name == _selectedDestination);
+    final isGare = _selectedDestination == 'Gare Rabat Agdal' || _selectedDestination == 'Gare Rabat Ville';
+    final isAirport = _selectedDestination == 'Aéroport de Rabat-Salé';
+
+    if (!isHotel && !isStation && !isGare && !isAirport) {
+      _showSnackBar('Destination inconnue.');
       return;
     }
 
-    try {
-      final isHotel = _hotels.any((hotel) =>
-      hotel.name == _selectedDestination);
-      final isStation = _stations.any((station) =>
-      station.name == _selectedDestination);
+    // Récupérer la position actuelle
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
 
-      if (!isHotel && !isStation) {
-        _showSnackBar('Destination inconnue.');
-        return;
-      }
+    print('Position actuelle : ${position.latitude}, ${position.longitude}');
 
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      _currentPosition = LatLng(position.latitude, position.longitude);
+      _markers.add(Marker(
+        point: _currentPosition,
+        builder: (ctx) => Icon(Icons.location_on, color: Colors.red, size: 40),
+      ));
+    });
 
-      LatLng destinationCoordinates;
-      if (isHotel) {
-        final destinationHotel = _hotels.firstWhere((hotel) =>
-        hotel.name == _selectedDestination);
-        destinationCoordinates =
-            LatLng(destinationHotel.latitude, destinationHotel.longitude);
-      } else {
-        final destinationStation = _stations.firstWhere((station) =>
-        station.name == _selectedDestination);
-        destinationCoordinates =
-            LatLng(destinationStation.lat, destinationStation.lng);
-      }
-      final route = await HotelService.fetchRoute(
-        position.latitude,
-        position.longitude,
-        destinationCoordinates.latitude,
-        destinationCoordinates.longitude,
-      );
+    // Déterminer les coordonnées de destination
+    LatLng destinationCoordinates;
 
-      setState(() {
-        _routeCoordinates =
-            route.map((coord) => LatLng(coord[0], coord[1])).toList();
-      });
-      _showSnackBar(
-          'Itinéraire vers $_selectedDestination chargé avec succès !');
-    } catch (error) {
-      _showSnackBar('Erreur : $error');
+    if (isHotel) {
+      final destinationHotel = _hotels.firstWhere((hotel) => hotel.name == _selectedDestination);
+      destinationCoordinates = LatLng(destinationHotel.latitude, destinationHotel.longitude);
+    } else if (isStation) {
+      final destinationStation = _stations.firstWhere((station) => station.name == _selectedDestination);
+      destinationCoordinates = LatLng(destinationStation.lat, destinationStation.lng);
+    } else if (isGare) {
+      destinationCoordinates = _selectedDestination == 'Gare Rabat Agdal'
+          ? LatLng(34.00232205505089, -6.855607461943176)
+          : LatLng(34.016568773487144, -6.8355616582435825);
+    } else if (isAirport) {
+      destinationCoordinates = LatLng(34.05049670986896, -6.7495096);
+      print('Destination : ${destinationCoordinates.latitude}, ${destinationCoordinates.longitude}');
+
+    } else {
+      throw Exception('Type de destination inconnu.');
     }
+
+    print('Destination : ${destinationCoordinates.latitude}, ${destinationCoordinates.longitude}');
+
+    // Rechercher l'itinéraire
+    final route = await HotelService.fetchRoute(
+      position.latitude,
+      position.longitude,
+      destinationCoordinates.latitude,
+      destinationCoordinates.longitude,
+    );
+
+    if (route.isEmpty) {
+      _showSnackBar('Aucune route disponible vers $_selectedDestination.');
+      return;
+    }
+
+    print('Itinéraire récupéré : ${route.length} points.');
+
+    setState(() {
+      _routeCoordinates.clear();
+      _routeCoordinates = route.map((coord) => LatLng(coord[0], coord[1])).toList();
+    });
+
+    _mapController.move(_currentPosition, 14);
+
+    _showSnackBar('Itinéraire vers $_selectedDestination chargé avec succès !');
+  } catch (error) {
+    print('Erreur : $error');
+    _showSnackBar('Erreur : $error');
   }
+}
 
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -283,29 +388,50 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Carte des Hôtels'),
-      ),
       drawer: CustomSidebar(
         onFilterChanged: _onFilterChanged,
         filters: filters.activeFilters,
       ),
-      body: Column(
+      body: Stack(
         children: [
-          SearchBarWidget(
-            destinations: _destinations,
-            onDestinationSelected: (selection) {
-              setState(() {
-                _selectedDestination = selection;
-              });
-            },
-            onSearchPressed: fetchRouteToSelectedDestination,
+          // La carte
+          MapWidget(
+            mapController: _mapController,
+            markers: _markers,
+            routeCoordinates: _routeCoordinates,
           ),
-          const SizedBox(height: 50),
-          Expanded(
-            child: MapWidget(
-              markers: _markers,
-              routeCoordinates: _routeCoordinates,
+
+          // Icône du menu en haut à gauche
+          Positioned(
+            top: 20.0,
+            left: 10.0,
+            child: SafeArea(
+              child: Builder(
+                builder: (context) => IconButton(
+                  icon: Icon(Icons.menu, color: Colors.black, size: 30),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                ),
+              ),
+            ),
+          ),
+
+          // Barre de recherche en haut
+          Positioned(
+            top: 80.0,
+            left: 0.0,
+            right: 0.0,
+            child: SafeArea(
+              child: SearchBarWidget(
+                destinations: _destinations,
+                onDestinationSelected: (selection) {
+                  setState(() {
+                    _selectedDestination = selection;
+                  });
+                },
+                onSearchPressed: fetchRouteToSelectedDestination,
+              ),
             ),
           ),
         ],

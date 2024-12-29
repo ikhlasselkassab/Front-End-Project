@@ -5,16 +5,19 @@ import 'package:latlong2/latlong.dart';
 class MapWidget extends StatelessWidget {
   final List<Marker> markers;
   final List<LatLng> routeCoordinates;
+   final MapController mapController; 
 
   const MapWidget({
     required this.markers,
     required this.routeCoordinates,
+       required this.mapController, 
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
+      mapController: mapController, 
       options: MapOptions(
         center: LatLng(34.0, -6.8),
         zoom: 12,

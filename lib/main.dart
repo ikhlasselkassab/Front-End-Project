@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ikhl/screens/map_screen.dart';
 import 'package:ikhl/screens/onboarding.dart';
 
 

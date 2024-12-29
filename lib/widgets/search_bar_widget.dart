@@ -14,62 +14,53 @@ class SearchBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Row(
         children: [
           Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: const Color.fromARGB(255, 201, 143, 211),
-                  width: 2,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Autocomplete<String>(
-                  optionsBuilder: (TextEditingValue textEditingValue) {
-                    if (textEditingValue.text.isEmpty) {
-                      return const Iterable<String>.empty();
-                    }
-                    return destinations.where((destination) =>
-                        destination.toLowerCase().contains(
-                            textEditingValue.text.toLowerCase()));
-                  },
-                  onSelected: (String selection) {
-                    onDestinationSelected(selection);
-                  },
-                  fieldViewBuilder:
-                      (context, controller, focusNode, onEditingComplete) {
-                    return TextField(
-                      controller: controller,
-                      focusNode: focusNode,
-                      decoration: InputDecoration(
-                        hintText: 'Hotels, restaurants, tram, bus ...',
-                        hintStyle: TextStyle(fontSize: 14),
-                        border: InputBorder.none,
-                      ),
-                    );
-                  },
-                ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Autocomplete<String>(
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  if (textEditingValue.text.isEmpty) {
+                    return const Iterable<String>.empty();
+                  }
+                  return destinations.where((destination) =>
+                      destination.toLowerCase().contains(
+                          textEditingValue.text.toLowerCase()));
+                },
+                onSelected: (String selection) {
+                  onDestinationSelected(selection);
+                },
+                fieldViewBuilder:
+                    (context, controller, focusNode, onEditingComplete) {
+                  return TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    decoration: InputDecoration(
+                      hintText: 'Cherchez un hotel , un restaurant ,l\'aéroport, les trames , les gares ....',
+                      border: InputBorder.none,
+                    ),
+                  );
+                },
               ),
             ),
           ),
-          const SizedBox(width: 8),
-          ElevatedButton(
+          IconButton(
+            icon: const Icon(Icons.search, color: Colors.blue),
             onPressed: onSearchPressed,
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              textStyle:
-              const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: const Text('Tracer Itinéraire'),
           ),
         ],
       ),
