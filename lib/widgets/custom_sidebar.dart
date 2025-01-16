@@ -25,12 +25,31 @@ class CustomSidebar extends StatelessWidget {
                   _buildExpansionTile(
                     title: 'Hôtels',
                     icon: Icons.bed,
-                    options: {
-                      'hotel_5_star': 'Hôtel 5 étoiles',
-                      'hotel_4_star': 'Hôtel 4 étoiles',
-                      'hotel_3_star': 'Hôtel 3 étoiles',
-                      'hotel_2_star': 'Hôtel 2 étoiles',
-                    },
+                    children: [
+                      _buildExpansionTile(
+                        title: 'Par étoiles',
+                        icon: Icons.star,
+                        options: {
+                          'hotel_5_star': 'Hôtel 5 étoiles',
+                          'hotel_4_star': 'Hôtel 4 étoiles',
+                          'hotel_3_star': 'Hôtel 3 étoiles',
+                          'hotel_2_star': 'Hôtel 2 étoiles',
+                        },
+                      ),
+                      _buildExpansionTile(
+                        title: 'Par quartiers',
+                        icon: Icons.location_city,
+                        options: {
+                          'agdal': 'Agdal',
+                          'hassan': 'Quartier Hassan',
+                          'administratif': 'Quartier administratif',
+                          'irfan': 'Madinat al Irfan',
+                          'hay_riad': 'Hay Riad',
+                          'medina': 'Medina de Rabat',
+                          'autres': 'Autres',
+                        },
+                      ),
+                    ],
                   ),
                   _buildExpansionTile(
                     title: 'Restaurants',
@@ -65,11 +84,104 @@ class CustomSidebar extends StatelessWidget {
                 ],
               ),
             ),
+            // Bouton pour réinitialiser les filtres
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  // Logique pour réinitialiser les filtres
+
+                  filters.updateAll((key, value) => false); // Réinitialise les filtres
+                  onFilterChanged(filters);
+                  // Notifie les widgets dépendants
+                },
+                icon: Icon(Icons.refresh, color: Colors.white),
+                label: Text(
+                  'Réinitialiser les filtres',
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueGrey[700], // Couleur principale du bouton
+                  padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  // Logique pour réinitialiser les filtres
+
+                  filters.updateAll((key, value) => true); // Réinitialise les filtres
+                  onFilterChanged(filters);
+                  // Notifie les widgets dépendants
+                },
+                icon: Icon(Icons.all_inclusive, color: Colors.white),
+                label: Text(
+                  'Appliquer tous les filtres',
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueGrey[700], // Couleur principale du bouton
+                  padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),
     );
   }
+
+
+  Widget _buildExpansionTile({
+    required String title,
+    IconData? icon,
+    Map<String, String>? options,
+    List<Widget>? children,
+  }) {
+    return ExpansionTile(
+      leading: icon != null
+          ? Icon(
+        icon,
+        color: Colors.blueGrey[700],
+        size: 28,
+      )
+          : null,
+      title: Text(
+        title,
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
+      ),
+      children: [
+        if (options != null)
+          ...options.entries.map((entry) {
+            return CheckboxListTile(
+              title: Text(
+                entry.value,
+                style: TextStyle(fontSize: 14),
+              ),
+              value: filters[entry.key] ?? false,
+              onChanged: (bool? value) {
+                onFilterChanged({entry.key: value ?? false});
+              },
+              activeColor: Colors.blueGrey[900],
+              checkColor: Colors.white,
+            );
+          }).toList(),
+        if (children != null) ...children,
+      ],
+    );
+  }
+
 
   Widget _buildHeader() {
     return DrawerHeader(
@@ -98,38 +210,6 @@ class CustomSidebar extends StatelessWidget {
     );
   }
 
-  Widget _buildExpansionTile({
-    required String title,
-    required IconData icon,
-    required Map<String, String> options,
-  }) {
-    return ExpansionTile(
-      leading: Icon(
-        icon,
-        color: Colors.blueGrey[700],
-        size: 28,
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-        ),
-      ),
-      children: options.entries.map((entry) {
-        return CheckboxListTile(
-          title: Text(
-            entry.value,
-            style: TextStyle(fontSize: 14),
-          ),
-          value: filters[entry.key] ?? false,
-          onChanged: (bool? value) {
-            onFilterChanged({entry.key: value ?? false});
-          },
-          activeColor: Colors.blueGrey[900],
-          checkColor: Colors.white,
-        );
-      }).toList(),
-    );
-  }
+
+
 }

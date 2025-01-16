@@ -16,6 +16,13 @@ class Filters {
     'bus_line_107': false,
     'line_1': false,
     'line_2': false,
+    'agdal':false,
+    'hassan':false,
+    'administratif':false,
+    'irfan':false,
+    'hay_riad':false,
+    'medina':false,
+    'autres':false
   };
 
   void updateFilters(Map<String, bool> newFilters) {
@@ -23,4 +30,14 @@ class Filters {
       activeFilters[key] = value;
     });
   }
-}
+
+  bool getValue(String key) {
+    return activeFilters[key] ?? false;
+  }
+
+
+
+  }
+
+
+

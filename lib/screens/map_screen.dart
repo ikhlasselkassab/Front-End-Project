@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geodesy/geodesy.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -39,8 +40,20 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
   List<String> _destinations = [];
   late LatLng _currentPosition;
   late MapController _mapController;
+  List<Polyline> _polylines = [];
+  Set<Polyline> polylines = {};
+
+
+
+
+
+
+
+
+
 
   String? _selectedDestination;
+
 
   bool _filterHotels5Star = false;
   bool _filterHotels4Star = false;
@@ -61,11 +74,23 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
 
   bool _filterLine1 = false;
   bool _filterLine2 = false;
+  bool _showStaticLine1 = false;
+
+
+
+
+
+
+
+
+
+
+
 
   @override
   void initState() {
     super.initState();
-    _mapController = MapController(); 
+    _mapController = MapController();
     loadHotels();
     loadRestaurants();
     loadBusStations();
@@ -73,7 +98,20 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
     loadDestinations();
     loadAirport();
     loadGares();
+    loadStade();
+
+
   }
+
+
+
+
+
+
+
+
+
+
   Future<void> loadGares() async {
   try {
     // Coordonnées de la Gare Rabat Agdal
@@ -134,6 +172,32 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
     print('Erreur lors du chargement de l\'aéroport: $error');
   }
 }
+
+
+
+
+  Future<void> loadStade() async {
+    try {
+      // Coordonnées de l'Aéroport de Rabat-Salé
+      final stadeCoordinates = LatLng(33.960055394978745, -6.88897151712504);
+
+      // Ajouter le marqueur pour l'aéroport
+      setState(() {
+        _markers.add(Marker(
+          point: stadeCoordinates,
+          builder: (ctx) => GestureDetector(
+            onTap: () {
+              // Afficher un message ou effectuer une action lorsque le marqueur est touché
+              _showSnackBar('Stade Prince Moulay Abdellah ');
+            },
+            child: Icon(Icons.stadium_sharp, color: Colors.pink, size: 30),
+          ),
+        ));
+      });
+    } catch (error) {
+      print('Erreur lors du chargement du stade: $error');
+    }
+  }
 
 
   Future<void> loadHotels() async {
@@ -268,6 +332,7 @@ Future<void> loadDestinations() async {
         'Gare Rabat Agdal',
         'Gare Rabat Ville',
         'Aéroport de Rabat-Salé',
+        'Stade Prince Moulay Abdellah '
       ]);
     });
   } catch (e) {
@@ -287,8 +352,10 @@ Future<void> loadDestinations() async {
     final isStation = _stations.any((station) => station.name == _selectedDestination);
     final isGare = _selectedDestination == 'Gare Rabat Agdal' || _selectedDestination == 'Gare Rabat Ville';
     final isAirport = _selectedDestination == 'Aéroport de Rabat-Salé';
+    final isStade = _selectedDestination == 'Stade Prince Moulay Abdellah';
 
-    if (!isHotel && !isStation && !isGare && !isAirport) {
+
+    if (!isHotel && !isStation && !isGare && !isAirport && !isStade) {
       _showSnackBar('Destination inconnue.');
       return;
     }
@@ -324,7 +391,14 @@ Future<void> loadDestinations() async {
       destinationCoordinates = LatLng(34.05049670986896, -6.7495096);
       print('Destination : ${destinationCoordinates.latitude}, ${destinationCoordinates.longitude}');
 
-    } else {
+    }
+    else if (isStade) {
+      destinationCoordinates = _selectedDestination == 'Stade Prince Moulay Abdellah'
+          ?LatLng(34.00232205505089, -6.855607461943176)
+          :LatLng(33.960055394978745, -6.88897151712504);
+      print('Destination : ${destinationCoordinates.latitude}, ${destinationCoordinates.longitude}');
+      }
+    else {
       throw Exception('Type de destination inconnu.');
     }
 
@@ -359,10 +433,13 @@ Future<void> loadDestinations() async {
   }
 }
 
+
+
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)));
   }
+
 
 
   final filters = Filters();
@@ -382,6 +459,8 @@ Future<void> loadDestinations() async {
         onBusStationTap: _showBusStationDetails,
         onTrainStationTap: _showStationDetails,
       );
+
+
     });
   }
 
@@ -399,6 +478,7 @@ Future<void> loadDestinations() async {
             mapController: _mapController,
             markers: _markers,
             routeCoordinates: _routeCoordinates,
+            polylines: _polylines,
           ),
 
           // Icône du menu en haut à gauche

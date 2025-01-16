@@ -44,6 +44,8 @@ dependencies:
   flutter_native_splash: ^2.4.3
   smooth_page_indicator: ^1.2.0+3
   iconsax_flutter: ^1.0.0
+  geodesy: ^0.10.2
+
 
 dev_dependencies:
   flutter_test:

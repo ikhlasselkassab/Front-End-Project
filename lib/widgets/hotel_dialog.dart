@@ -53,7 +53,7 @@ class HotelDialog extends StatelessWidget {
             ),
             SizedBox(height: 15),
             Text(
-              '📍 ${hotel.adresse}',
+              '📍 ${hotel.adresse}'+' \n${hotel.quartier}',
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.blue.shade700,
@@ -70,6 +70,7 @@ class HotelDialog extends StatelessWidget {
               textAlign: TextAlign.justify,
             ),
             SizedBox(height: 20),
+
 
           ],
         ),

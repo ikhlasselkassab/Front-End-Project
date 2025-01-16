@@ -7,6 +7,7 @@ class Hotel {
   final String image;
   final String url;
   final int etoiles;
+  final  String quartier;
 
   Hotel({
     required this.name,
@@ -16,7 +17,8 @@ class Hotel {
     required this.adresse,
     required this.image,
     required this.url,
-    required this.etoiles
+    required this.etoiles,
+    required this.quartier
   });
 
   factory Hotel.fromJson(Map<String, dynamic> json) {
@@ -28,7 +30,8 @@ class Hotel {
         adresse: json['adresse'],
         image : json['image'],
         url: json['url'],
-        etoiles: json['etoiles']
+        etoiles: json['etoiles'],
+        quartier:json['quartier']
 
 
     );

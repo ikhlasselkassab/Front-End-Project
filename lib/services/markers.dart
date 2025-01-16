@@ -101,15 +101,71 @@ class MarkerService {
     return markers;
   }
 
-  // Helper methods to check filters
+
   bool _matchesHotelFilter(Hotel hotel, Filters filters) {
-    return (filters.activeFilters['hotel_5_star'] == true && hotel.etoiles == 5) ||
-        (filters.activeFilters['hotel_4_star'] == true && hotel.etoiles == 4) ||
-        (filters.activeFilters['hotel_3_star'] == true && hotel.etoiles == 3) ||
-        (filters.activeFilters['hotel_2_star'] == true && hotel.etoiles == 2);
+    // Vérifie si au moins un filtre lié aux hôtels est actif
+    bool hasActiveHotelFilters = filters.activeFilters['hotel_5_star'] == true ||
+        filters.activeFilters['hotel_4_star'] == true ||
+        filters.activeFilters['hotel_3_star'] == true ||
+        filters.activeFilters['hotel_2_star'] == true ||
+        filters.activeFilters['agdal'] == true ||
+        filters.activeFilters['hassan'] == true ||
+        filters.activeFilters['administratif'] == true ||
+        filters.activeFilters['irfan'] == true ||
+        filters.activeFilters['hay_riad'] == true ||
+        filters.activeFilters['medina'] == true ||
+        filters.activeFilters['autres'] == true;
+
+    // Si aucun filtre lié aux hôtels n'est actif, retourne `false`
+    if (!hasActiveHotelFilters) {
+      return false;
+    }
+
+    // Vérifie les étoiles (seulement si un filtre sur les étoiles est actif)
+    bool matchesEtoiles = true;
+    if (filters.activeFilters['hotel_5_star'] == true ||
+        filters.activeFilters['hotel_4_star'] == true ||
+        filters.activeFilters['hotel_3_star'] == true ||
+        filters.activeFilters['hotel_2_star'] == true) {
+      matchesEtoiles = (filters.activeFilters['hotel_5_star'] == true && hotel.etoiles == 5) ||
+          (filters.activeFilters['hotel_4_star'] == true && hotel.etoiles == 4) ||
+          (filters.activeFilters['hotel_3_star'] == true && hotel.etoiles == 3) ||
+          (filters.activeFilters['hotel_2_star'] == true && hotel.etoiles == 2);
+    }
+
+    // Vérifie le quartier (seulement si un filtre sur les quartiers est actif)
+    bool matchesQuartier = true;
+    if (filters.activeFilters['agdal'] == true ||
+        filters.activeFilters['hassan'] == true ||
+        filters.activeFilters['administratif'] == true ||
+        filters.activeFilters['irfan'] == true ||
+        filters.activeFilters['hay_riad'] == true ||
+        filters.activeFilters['medina'] == true ||
+        filters.activeFilters['autres'] == true) {
+      matchesQuartier = (filters.activeFilters['agdal'] == true && hotel.quartier.toLowerCase() == 'agdal') ||
+          (filters.activeFilters['hassan'] == true && hotel.quartier.toLowerCase() == 'quartier hassan') ||
+          (filters.activeFilters['administratif'] == true && hotel.quartier.toLowerCase() == 'quartier administratif') ||
+          (filters.activeFilters['irfan'] == true && hotel.quartier.toLowerCase() == 'madinat al irfan') ||
+          (filters.activeFilters['hay_riad'] == true && hotel.quartier.toLowerCase() == 'hay riad') ||
+          (filters.activeFilters['medina'] == true && hotel.quartier.toLowerCase() == 'medina de rabat') ||
+          (filters.activeFilters['autres'] == true && hotel.quartier.toLowerCase() == 'autres');
+    }
+
+    // Retourne vrai uniquement si tous les filtres actifs sont respectés
+    return matchesEtoiles && matchesQuartier;
   }
 
+
+
+
+
+
+
+
   bool _matchesRestaurantFilter(Restaurant restaurant, Filters filters) {
+
+
+
     return (filters.activeFilters['restaurant_italien'] == true &&
         restaurant.categorie.toLowerCase() == 'italien') ||
         (filters.activeFilters['restaurant_fastfood'] == true &&
@@ -120,6 +176,10 @@ class MarkerService {
             restaurant.categorie.toLowerCase() == 'oriental') ||
         (filters.activeFilters['restaurant_asiatique'] == true &&
             restaurant.categorie.toLowerCase() == 'asiatique');
+
+
+
+
   }
 
   bool _matchesBusStationFilter(StationBus station, Filters filters) {
