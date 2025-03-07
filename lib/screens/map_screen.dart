@@ -342,97 +342,101 @@ Future<void> loadDestinations() async {
 
 
   Future<void> fetchRouteToSelectedDestination() async {
-  if (_selectedDestination == null) {
-    _showSnackBar('Veuillez sélectionner une destination.');
-    return;
-  }
-
-  try {
-    final isHotel = _hotels.any((hotel) => hotel.name == _selectedDestination);
-    final isStation = _stations.any((station) => station.name == _selectedDestination);
-    final isGare = _selectedDestination == 'Gare Rabat Agdal' || _selectedDestination == 'Gare Rabat Ville';
-    final isAirport = _selectedDestination == 'Aéroport de Rabat-Salé';
-    final isStade = _selectedDestination == 'Stade Prince Moulay Abdellah';
-
-
-    if (!isHotel && !isStation && !isGare && !isAirport && !isStade) {
-      _showSnackBar('Destination inconnue.');
+    if (_selectedDestination == null) {
+      _showSnackBar('Veuillez sélectionner une destination.');
       return;
     }
 
-    // Récupérer la position actuelle
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    try {
+      final isHotel = _hotels.any((hotel) => hotel.name == _selectedDestination);
+      final isStation = _stations.any((station) => station.name == _selectedDestination);
+      final isRestaurant = _restaurants.any((restaurant) => restaurant.nom == _selectedDestination);
+      final isGare = _selectedDestination == 'Gare Rabat Agdal' || _selectedDestination == 'Gare Rabat Ville';
+      final isAirport = _selectedDestination == 'Aéroport de Rabat-Salé';
 
-    print('Position actuelle : ${position.latitude}, ${position.longitude}');
-
-    setState(() {
-      _currentPosition = LatLng(position.latitude, position.longitude);
-      _markers.add(Marker(
-        point: _currentPosition,
-        builder: (ctx) => Icon(Icons.location_on, color: Colors.red, size: 40),
-      ));
-    });
-
-    // Déterminer les coordonnées de destination
-    LatLng destinationCoordinates;
-
-    if (isHotel) {
-      final destinationHotel = _hotels.firstWhere((hotel) => hotel.name == _selectedDestination);
-      destinationCoordinates = LatLng(destinationHotel.latitude, destinationHotel.longitude);
-    } else if (isStation) {
-      final destinationStation = _stations.firstWhere((station) => station.name == _selectedDestination);
-      destinationCoordinates = LatLng(destinationStation.lat, destinationStation.lng);
-    } else if (isGare) {
-      destinationCoordinates = _selectedDestination == 'Gare Rabat Agdal'
-          ? LatLng(34.00232205505089, -6.855607461943176)
-          : LatLng(34.016568773487144, -6.8355616582435825);
-    } else if (isAirport) {
-      destinationCoordinates = LatLng(34.05049670986896, -6.7495096);
-      print('Destination : ${destinationCoordinates.latitude}, ${destinationCoordinates.longitude}');
-
-    }
-    else if (isStade) {
-      destinationCoordinates = _selectedDestination == 'Stade Prince Moulay Abdellah'
-          ?LatLng(34.00232205505089, -6.855607461943176)
-          :LatLng(33.960055394978745, -6.88897151712504);
-      print('Destination : ${destinationCoordinates.latitude}, ${destinationCoordinates.longitude}');
+      if (!isHotel && !isStation && !isRestaurant && !isGare && !isAirport) {
+        _showSnackBar('Destination inconnue.');
+        return;
       }
-    else {
-      throw Exception('Type de destination inconnu.');
+
+      // Récupérer la position actuelle
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      print('Position actuelle : ${position.latitude}, ${position.longitude}');
+
+      setState(() {
+        _currentPosition = LatLng(position.latitude, position.longitude);
+        _markers.add(Marker(
+          point: _currentPosition,
+          builder: (ctx) => Icon(Icons.location_on, color: Colors.red, size: 40),
+        ));
+      });
+
+      // Déterminer les coordonnées de destination
+      LatLng destinationCoordinates;
+
+      if (isHotel) {
+        final destinationHotel = _hotels.firstWhere((hotel) => hotel.name == _selectedDestination);
+        destinationCoordinates = LatLng(destinationHotel.latitude, destinationHotel.longitude);
+      } else if (isStation) {
+        final destinationStation = _stations.firstWhere((station) => station.name == _selectedDestination);
+        destinationCoordinates = LatLng(destinationStation.lat, destinationStation.lng);
+      } else if (isRestaurant) {
+        final destinationRestaurant = _restaurants.firstWhere((restaurant) => restaurant.nom == _selectedDestination);
+        destinationCoordinates = LatLng(destinationRestaurant.latitude, destinationRestaurant.longitude);
+      } else if (isGare) {
+        destinationCoordinates = _selectedDestination == 'Gare Rabat Agdal'
+            ? LatLng(34.00232205505089, -6.855607461943176)
+            : LatLng(34.016568773487144, -6.8355616582435825);
+      } else if (isAirport) {
+        destinationCoordinates = LatLng(34.05049670986896, -6.7495096);
+      } else {
+        throw Exception('Type de destination inconnu.');
+      }
+
+      print('Destination : ${destinationCoordinates.latitude}, ${destinationCoordinates.longitude}');
+
+      // Rechercher l'itinéraire
+      List<List<double>> route;
+      if (isHotel || isRestaurant) {
+        // Use RestaurantService.fetchRoute for restaurants and hotels
+        route = await RestaurantService.fetchRoute(
+          position.latitude,
+          position.longitude,
+          destinationCoordinates.latitude,
+          destinationCoordinates.longitude,
+        );
+      } else {
+        // Use HotelService.fetchRoute for other destinations (stations, gares, airports)
+        route = await HotelService.fetchRoute(
+          position.latitude,
+          position.longitude,
+          destinationCoordinates.latitude,
+          destinationCoordinates.longitude,
+        );
+      }
+
+      if (route.isEmpty) {
+        _showSnackBar('Aucune route disponible vers $_selectedDestination.');
+        return;
+      }
+
+      print('Itinéraire récupéré : ${route.length} points.');
+
+      setState(() {
+        _routeCoordinates.clear();
+        _routeCoordinates = route.map((coord) => LatLng(coord[0], coord[1])).toList();
+      });
+
+      _mapController.move(_currentPosition, 14);
+
+      _showSnackBar('Itinéraire vers $_selectedDestination chargé avec succès !');
+    } catch (error) {
+      print('Erreur : $error');
+      _showSnackBar('Erreur : $error');
     }
-
-    print('Destination : ${destinationCoordinates.latitude}, ${destinationCoordinates.longitude}');
-
-    // Rechercher l'itinéraire
-    final route = await HotelService.fetchRoute(
-      position.latitude,
-      position.longitude,
-      destinationCoordinates.latitude,
-      destinationCoordinates.longitude,
-    );
-
-    if (route.isEmpty) {
-      _showSnackBar('Aucune route disponible vers $_selectedDestination.');
-      return;
-    }
-
-    print('Itinéraire récupéré : ${route.length} points.');
-
-    setState(() {
-      _routeCoordinates.clear();
-      _routeCoordinates = route.map((coord) => LatLng(coord[0], coord[1])).toList();
-    });
-
-    _mapController.move(_currentPosition, 14);
-
-    _showSnackBar('Itinéraire vers $_selectedDestination chargé avec succès !');
-  } catch (error) {
-    print('Erreur : $error');
-    _showSnackBar('Erreur : $error');
   }
-}
-
 
 
   void _showSnackBar(String message) {

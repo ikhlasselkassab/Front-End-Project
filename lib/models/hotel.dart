@@ -23,9 +23,9 @@ class Hotel {
 
   factory Hotel.fromJson(Map<String, dynamic> json) {
     return Hotel(
-        name: json['name'],
-        latitude: json['latitude'].toDouble(), // Conversion explicite en double
-        longitude: json['longitude'].toDouble(),
+        name: json['name'] ?? "",
+        latitude: json['latitude'].toDouble() ?? 0.0, // Conversion explicite en double
+        longitude: json['longitude'].toDouble() ?? 0.0,
         description: json['description'],
         adresse: json['adresse'],
         image : json['image'],
