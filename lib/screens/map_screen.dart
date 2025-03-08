@@ -43,9 +43,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
   List<Polyline> _polylines = [];
   Set<Polyline> polylines = {};
   dynamic _selectedDestination;
-  late LatLng _selectedDestinationCoordinates;
-
-
+  LatLng? _selectedDestinationCoordinates;
 
   @override
   void initState() {
@@ -203,6 +201,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       print('Error loading bus stations: $error');
     }
   }
+
   void _showRestaurantDetails(Restaurant restaurant) {
     showDialog(
       context: context,
@@ -238,7 +237,6 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       },
     );
   }
-
 
   Future<void> loadDestinations() async {
     try {
@@ -465,6 +463,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
       ),
     );
   }
+
   final filters = Filters();
   final markerService = MarkerService();
 
@@ -558,6 +557,7 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
 
     // Ajouter un marqueur pour la destination
     setState(() {
+      _selectedDestinationCoordinates = destinationCoordinates; // Mettre à jour les coordonnées
       _markers.add(
         Marker(
           point: destinationCoordinates,
@@ -569,9 +569,19 @@ class _HotelMapScreenState extends State<HotelMapScreen> {
 
   void _onCloseDetails() {
     setState(() {
+      // 1. Supprimer le marqueur de la destination sélectionnée
+      if (_selectedDestinationCoordinates != null) {
+        _markers.removeWhere((marker) =>
+        marker.point.latitude == _selectedDestinationCoordinates!.latitude &&
+            marker.point.longitude == _selectedDestinationCoordinates!.longitude
+        );
+      }
+
+      // 2. Réinitialiser la destination sélectionnée
       _selectedDestination = null;
-      _markers.removeWhere((marker) => marker.point == _selectedDestinationCoordinates);
+
+      // 3. Réinitialiser les coordonnées de la destination sélectionnée
+      _selectedDestinationCoordinates = null;
     });
   }
 }
-

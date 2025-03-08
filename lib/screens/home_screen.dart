@@ -25,6 +25,28 @@ class _HomeScreenState extends State<HomeScreen> {
       'image': "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTxfRGXgBnjYL20y-5TWA9LElBnca2s8YyyQ&s", // URL réelle
       'price': '\$419/night',
     },
+    {
+      'name': "Riad Dar Alia",
+      'image': "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiVaaKtL-LwXMzexvRoGrj9Fo_G-0IvHtp9g&s",
+      'price': '\$100/night',
+    },
+    {
+      "name": "STORY Rabat",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTS-9POpJgjAS2wMjckUotDne8z1mNWqpmmIA&s",
+      'price': '\$100/night',
+    },
+    {
+      "name": "Myn in Rabat",
+      "image": "https://lh3.googleusercontent.com/p/AF1QipMSympB7WNkkRU7KSWAlGBoM7DQA4O8b9NaDQRq=s1360-w1360-h1020",
+      'price': '\$150/night',
+    },
+    {
+      "name": "Riad à la Belle Etoile",
+      "image": "https://lh3.googleusercontent.com/p/AF1QipMuNlj-Qr5Ju8nt569-acIGKsjVKdU5CAHYsiPs=s1360-w1360-h1020",
+      'price': '\$200/night',
+    },
+
+
   ];
 
   final List<Map<String, String>> restaurants = [
@@ -36,13 +58,36 @@ class _HomeScreenState extends State<HomeScreen> {
     {
       'name': 'Little Mamma Agdal',
       'image': "https://th.bing.com/th/id/OIP.IJKeaNjXu5pw0Rg-MBcQZQHaFj?rs=1&pid=ImgDetMain", // URL réelle
-      'type': ' Cuisine Italienne',
+      'type': 'Cuisine Italienne',
     },
     {
       'name': 'Restaurant Abtal Alcham',
       'image': "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQfzEsyf_1tqA4oICv8hdjG-2O2G9OEjNZGA&s", // URL réelle
       'type': 'Cuisine Orientale',
     },
+    {
+      'name': "La Mamma",
+      'image': "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/16/9b/8f/76/photo1jpg.jpg?w=1000&h=-1&s=1",
+      'type': "Cuisine Italienne",
+    },
+    {
+      'name': "Restaurant Sufra",
+      'image': "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/19/4a/15/b0/aubergine-fatteh.jpg?w=1100&h=600&s=1",
+      'type': "Orientale",
+    },
+    {
+      'name': "Naga Thaï Cuisine",
+      'image': "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/07/3b/dc/7a/cosy-and-warm.jpg?w=500&h=300&s=1",
+      'type': "Asiatique",
+    },
+    {
+      'name': "Shoko Lounge",
+      'image': "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2a/ca/d3/68/shoko-lounge-rabat.jpg?w=1000&h=-1&s=1 ",
+      'type': "Asiatique",
+    }
+
+
+
   ];
 
   void _onItemTapped(int index) {
@@ -64,36 +109,36 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-    'Découvrez notre application',
-    style: TextStyle(
-      fontWeight: FontWeight.bold, // Appliquer le style gras
-    )),
+            'Découvrez notre application',
+            style: TextStyle(
+              fontWeight: FontWeight.bold, // Appliquer le style gras
+            )),
         backgroundColor: const Color.fromARGB(255, 179, 217, 218),
       ),
       body: _selectedIndex == 0
           ? SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "hôtels recommandés",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 10),
-                    _buildHorizontalList(hotels, 'price'),
-                    SizedBox(height: 20),
-                    Text(
-                      " Restaurants recommandés",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 10),
-                    _buildHorizontalList(restaurants, 'type'),
-                  ],
-                ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "hôtels recommandés",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-            )
+              SizedBox(height: 10),
+              _buildHorizontalList(hotels, 'price'),
+              SizedBox(height: 20),
+              Text(
+                " Restaurants recommandés",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              _buildHorizontalList(restaurants, 'type'),
+            ],
+          ),
+        ),
+      )
           : HotelMapScreen(), // L'écran de la carte quand l'index est 1
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
