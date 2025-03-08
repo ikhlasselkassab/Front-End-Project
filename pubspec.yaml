@@ -45,6 +45,7 @@ dependencies:
   smooth_page_indicator: ^1.2.0+3
   iconsax_flutter: ^1.0.0
   geodesy: ^0.10.2
+  google_fonts: ^4.0.3 # Ajoutez cette ligne
 
 
 dev_dependencies:
